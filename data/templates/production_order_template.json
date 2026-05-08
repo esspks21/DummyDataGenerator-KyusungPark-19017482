@@ -1,0 +1,80 @@
+{
+  "metadata": {
+    "version": "1.0",
+    "domain": "semiconductor_production_order",
+    "description": "Semiconductor sample production order management dummy data template"
+  },
+  "templates": {
+    "sample_types": ["Wafer", "Die", "Package", "Chip", "Module", "Substrate"],
+    "process_steps": [
+      "Lithography",
+      "Etching",
+      "CVD Deposition",
+      "PVD Sputtering",
+      "CMP",
+      "Ion Implantation",
+      "RTP Anneal",
+      "Metallization",
+      "Passivation",
+      "Inspection",
+      "Cleaning"
+    ],
+    "production_lines": ["Line-A", "Line-B", "Line-C", "Line-D", "Line-E"],
+    "equipment_ids": [
+      "EQP-LIT-001", "EQP-LIT-002",
+      "EQP-ETH-001", "EQP-ETH-002",
+      "EQP-CVD-001", "EQP-PVD-001",
+      "EQP-CMP-001", "EQP-IMP-001",
+      "EQP-RTP-001", "EQP-MET-001",
+      "EQP-INS-001", "EQP-CLN-001"
+    ],
+    "order_statuses": [
+      "Pending",
+      "Scheduled",
+      "In Progress",
+      "Quality Check",
+      "Rework",
+      "Completed",
+      "On Hold",
+      "Cancelled"
+    ],
+    "priorities": ["Low", "Normal", "High", "Urgent", "Critical"],
+    "customers": [
+      "Samsung Electronics",
+      "SK Hynix",
+      "Micron Technology",
+      "Intel Corporation",
+      "TSMC",
+      "GlobalFoundries",
+      "UMC",
+      "SMIC"
+    ],
+    "material_codes": [
+      "MAT-SI-P100",
+      "MAT-SI-N100",
+      "MAT-GE-001",
+      "MAT-SOI-001",
+      "MAT-GAAS-001",
+      "MAT-SIC-001",
+      "MAT-GAN-001",
+      "MAT-INP-001"
+    ],
+    "sample_name_prefixes": ["Alpha", "Beta", "Gamma", "Delta", "Epsilon", "Zeta"],
+    "wafer_sizes_mm": [150, 200, 300, 450],
+    "node_sizes_nm": [7, 10, 14, 22, 28, 45, 65, 90, 130, 180]
+  },
+  "ranges": {
+    "quantity_min": 1,
+    "quantity_max": 500,
+    "unit_price_min": 1000.0,
+    "unit_price_max": 50000.0,
+    "thickness_min_um": 0.1,
+    "thickness_max_um": 2.0,
+    "defect_count_min": 0,
+    "defect_count_max": 50,
+    "yield_rate_min": 60.0,
+    "yield_rate_max": 99.9,
+    "due_date_offset_min_days": 7,
+    "due_date_offset_max_days": 90
+  }
+}
