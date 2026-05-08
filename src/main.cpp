@@ -3,6 +3,10 @@
 #include <stdexcept>
 #include "DummyDataGenerator.h"
 
+#ifdef _WIN32
+#include <windows.h>
+#endif
+
 static void printUsage(const char* prog) {
     std::cout
         << "Usage: " << prog << " [options]\n"
@@ -19,6 +23,11 @@ static void printUsage(const char* prog) {
 }
 
 int main(int argc, char* argv[]) {
+#ifdef _WIN32
+    SetConsoleOutputCP(CP_UTF8);
+    SetConsoleCP(CP_UTF8);
+#endif
+
     int         count        = 10;
     std::string templatePath = "data/templates/production_order_template.json";
     std::string outputPath   = "output/dummy_orders.json";

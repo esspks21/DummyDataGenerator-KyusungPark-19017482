@@ -8,12 +8,19 @@ SimpleJsonParser::SimpleJsonParser(const std::string& jsonContent)
     : m_content(jsonContent) {}
 
 SimpleJsonParser SimpleJsonParser::fromFile(const std::string& filePath) {
-    std::ifstream file(filePath);
+    std::ifstream file(filePath, std::ios::binary);
     if (!file.is_open())
         throw std::runtime_error("Cannot open template file: " + filePath);
     std::ostringstream ss;
     ss << file.rdbuf();
-    return SimpleJsonParser(ss.str());
+    // UTF-8 BOM 제거 (0xEF 0xBB 0xBF)
+    std::string content = ss.str();
+    if (content.size() >= 3 &&
+        static_cast<unsigned char>(content[0]) == 0xEF &&
+        static_cast<unsigned char>(content[1]) == 0xBB &&
+        static_cast<unsigned char>(content[2]) == 0xBF)
+        content.erase(0, 3);
+    return SimpleJsonParser(content);
 }
 
 std::string SimpleJsonParser::trim(const std::string& s) {

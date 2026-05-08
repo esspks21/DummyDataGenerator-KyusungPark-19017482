@@ -13,6 +13,17 @@
 
 namespace fs = std::filesystem;
 
+// localtime_s (MSVC) / localtime_r (POSIX) 크로스플랫폼 래퍼
+static std::tm safeLocaltime(std::time_t t) {
+    std::tm result{};
+#ifdef _WIN32
+    localtime_s(&result, &t);
+#else
+    localtime_r(&t, &result);
+#endif
+    return result;
+}
+
 DummyDataGenerator::DummyDataGenerator(unsigned int seed)
     : m_orderCounter(0) {
     m_rng = seed ? std::mt19937(seed) : std::mt19937(std::random_device{}());
@@ -104,22 +115,21 @@ double DummyDataGenerator::randomDouble(double min, double max) {
 
 std::string DummyDataGenerator::generateDate(int offsetDays) const {
     std::time_t t = std::time(nullptr) + static_cast<std::time_t>(offsetDays) * 86400;
-    std::tm* tm_p = std::localtime(&t);
+    std::tm tm_val = safeLocaltime(t);
     std::ostringstream ss;
-    ss << (tm_p->tm_year + 1900) << "-"
-       << std::setfill('0') << std::setw(2) << (tm_p->tm_mon + 1) << "-"
-       << std::setw(2) << tm_p->tm_mday;
+    ss << (tm_val.tm_year + 1900) << "-"
+       << std::setfill('0') << std::setw(2) << (tm_val.tm_mon + 1) << "-"
+       << std::setw(2) << tm_val.tm_mday;
     return ss.str();
 }
 
 std::string DummyDataGenerator::generateOrderId() {
-    std::time_t t  = std::time(nullptr);
-    std::tm*  tm_p = std::localtime(&t);
+    std::tm tm_val = safeLocaltime(std::time(nullptr));
     std::ostringstream ss;
     ss << "ORD-"
-       << (tm_p->tm_year + 1900)
-       << std::setfill('0') << std::setw(2) << (tm_p->tm_mon + 1)
-       << std::setw(2) << tm_p->tm_mday
+       << (tm_val.tm_year + 1900)
+       << std::setfill('0') << std::setw(2) << (tm_val.tm_mon + 1)
+       << std::setw(2) << tm_val.tm_mday
        << "-" << std::setw(6) << (++m_orderCounter);
     return ss.str();
 }
@@ -239,15 +249,14 @@ std::string DummyDataGenerator::orderToJson(const ProductionOrder& o, const std:
 }
 
 std::string DummyDataGenerator::toJson(const std::vector<ProductionOrder>& orders) const {
-    std::time_t now  = std::time(nullptr);
-    std::tm*  tm_p   = std::localtime(&now);
+    std::tm tm_val = safeLocaltime(std::time(nullptr));
     std::ostringstream ts;
-    ts << (tm_p->tm_year + 1900)
-       << "-" << std::setfill('0') << std::setw(2) << (tm_p->tm_mon + 1)
-       << "-" << std::setw(2) << tm_p->tm_mday
-       << "T" << std::setw(2) << tm_p->tm_hour
-       << ":" << std::setw(2) << tm_p->tm_min
-       << ":" << std::setw(2) << tm_p->tm_sec;
+    ts << (tm_val.tm_year + 1900)
+       << "-" << std::setfill('0') << std::setw(2) << (tm_val.tm_mon + 1)
+       << "-" << std::setw(2) << tm_val.tm_mday
+       << "T" << std::setw(2) << tm_val.tm_hour
+       << ":" << std::setw(2) << tm_val.tm_min
+       << ":" << std::setw(2) << tm_val.tm_sec;
 
     std::ostringstream ss;
     ss << "{\n"
@@ -276,7 +285,7 @@ bool DummyDataGenerator::saveToFile(const std::string& filePath,
         if (p.has_parent_path())
             fs::create_directories(p.parent_path());
 
-        std::ofstream file(filePath);
+        std::ofstream file(filePath, std::ios::binary);
         if (!file.is_open()) {
             std::cerr << "Cannot open output file: " << filePath << "\n";
             return false;
