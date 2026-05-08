@@ -1,0 +1,7 @@
+<Solution>
+  <Configurations>
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Project Path="DummyDataGenerator-KyusungPark-19017482/DummyDataGenerator-KyusungPark-19017482.vcxproj" />
+</Solution>
